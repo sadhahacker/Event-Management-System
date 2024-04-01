@@ -48,7 +48,7 @@ class LoginController extends Controller
             "redirect" => url("dashboard"),
             'accessToken' =>$data['token'],
             'token_type' => 'Bearer',
-            'message' => 'Login successful',
+            'message' => 'Login successful done',
         ],200);
     }
     elseif ($user->UserType === 'attendee') {

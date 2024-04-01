@@ -16,11 +16,9 @@ class AdminController extends Controller
         $eventCount = Event::count();
         $bookingCount = Attendee::count();
 
-        // Calculate the grand total using Eloquent
-        $grandTotal = Attendee::join('events', 'attendees.EventID', '=', 'events.EventID')
-            ->selectRaw('SUM(attendees.Quantity * events.RegistrationFee) AS GrandTotal')
-            ->groupBy('attendees.AttendeeID', 'events.EventID', 'events.Title')
-            ->get()->sum('GrandTotal');
+        $grandTotal =  Attendee::with('event')->get()->sum(function ($attendee) {
+            return $attendee->event->RegistrationFee * $attendee->Quantity;
+        });
 
         $data = [
             'customerCount' => $customerCount,

@@ -348,15 +348,15 @@
                             <select id="input3" class="sugginput">
                                 <option value="" hidden>{{ __('localization.choose') }}</option>
                                 <!-- Available Options -->
-                                <option value="1">Business & Seminars</option>
-                                <option value="2">Food & Drink</option>
-                                <option value="3">Music & Concerts</option>
-                                <option value="4">Sports & Fitness</option>
-                                <option value="5">Science & Tech</option>
-                                <option value="6">Travel & Trekking</option>
-                                <option value="7">Charity & Non-profit</option>
-                                <option value="8">Education & Classes</option>
-                                <option value="9">Yoga & Health</option>
+                                <option value="Business & Seminars">Business & Seminars</option>
+                                <option value="Food & Drink">Food & Drink</option>
+                                <option value="Music & Concerts">Music & Concerts</option>
+                                <option value="Sports & Fitness">Sports & Fitness</option>
+                                <option value="Science & Tech">Science & Tech</option>
+                                <option value="Travel & Trekking">Travel & Trekking</option>
+                                <option value="Charity & Non-profit">Charity & Non-profit</option>
+                                <option value="Education & Classes">Education & Classes</option>
+                                <option value="Yoga & Health">Yoga & Health</option>
                             </select>
                             <input type="submit" class="search" value="{{ __('localization.search') }}"
                                 id="submitBtn">
@@ -483,15 +483,15 @@
                     },
                     success: function(response) {
                         console.log(response);
-                        $('#title').text(response.Title);
-                        $('#location').text(response.Location);
-                        $('#category').text(response.Category);
-                        $('#description').text(response.Description);
-                        $('#start').text(response.StartDateTime);
-                        $('#end').text(response.EndDateTime);
+                        $('#title').text(response.event.Title);
+                        $('#location').text(response.event.Location);
+                        $('#category').text(response.event.Category);
+                        $('#description').text(response.event.Description);
+                        $('#start').text(response.event.StartDateTime);
+                        $('#end').text(response.event.EndDateTime);
                         $('#reg').text(response.RegistrationDate);
                         $('#quantity').text(response.Quantity);
-                        $('#amount').text(response.RegistrationFee * response.Quantity);
+                        $('#amount').text(response.event.RegistrationFee * response.Quantity);
 
                         // Show the modal
                         $('#eventModal').modal('show');
@@ -527,11 +527,11 @@
             <div class="card shadow-sm" id="eventcard" data-id="${event.AttendeeID}" data-toggle="modal" data-target=".bd-example-modal-xl"> <!-- Add data-id attribute with event ID and data-toggle and data-target -->
                 <img class="card-img-top" src="https://mdbootstrap.com/img/Mockups/Lightbox/Thumbnail/img%20(67).webp" alt="Card image cap">
                 <div class="card-body">
-                    <h4 class="card-title">${event.Title}</h4>
-                    <p class="card-text">${event.Category}</p>
+                    <h4 class="card-title">${event.event.Title}</h4>
+                    <p class="card-text">${event.event.Category}</p>
                     <div class="d-flex justify-content-between align-items-center">
-                        <p class="card-text"><i class="fas fa-location-dot"></i>  ${event.Location}</p>
-                        <small class="text-body-secondary">₹${event.RegistrationFee}</small>
+                        <p class="card-text"><i class="fas fa-location-dot"></i>  ${event.event.Location}</p>
+                        <small class="text-body-secondary">₹${event.event.RegistrationFee}</small>
                     </div>
                 </div>
             </div>

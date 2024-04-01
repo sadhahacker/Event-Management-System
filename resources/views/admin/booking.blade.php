@@ -335,8 +335,8 @@
                     $.each(response, function(index, booking) {
                         console.log(booking);
                         $('#booking-table').DataTable().row.add([
-                            booking.EventName,
-                            booking.UserName,
+                            booking.event.Title,
+                            booking.user.Username,
                             booking.AttendanceStatus,
                             booking.Quantity,
                             '<ul class="list-inline m-0"><li class="list-inline-item"><button class="btn btn-primary btn-sm rounded-0 view-booking" type="button" data-id="' +
@@ -363,8 +363,8 @@
                         // Handle successful response
                         console.log(response);
                         // Here you can populate the booking details in your HTML elements
-                        $('#viewtitle').text(response.EventName);
-                        $('#viewdescription').text(response.Description);
+                        $('#viewtitle').text(response.event.Title);
+                        $('#viewdescription').text(response.event.Description);
                         $('#viewstatus').text(response.AttendanceStatus);
                         $('#viewcreateat').text(response.RegistrationDate);
                         $('#viewquantity').text(response.Quantity);

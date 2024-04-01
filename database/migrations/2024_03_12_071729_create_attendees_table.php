@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('EventID')->constrained('events','EventID');
             $table->timestamp('RegistrationDate')->nullable();
             $table->enum('AttendanceStatus', ['registered', 'checked in', 'canceled'])->default('registered');
+            $table->integer('Quantity')->nullable();
             $table->timestamps();
         });
     }

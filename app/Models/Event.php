@@ -9,4 +9,7 @@ class Event extends Model
 {
     use HasFactory;
     protected $primaryKey = 'EventID';
+    public function attendee(){
+        return $this->hasMany(Attendee::class);
+    }
 }

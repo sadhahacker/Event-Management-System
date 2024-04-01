@@ -9,24 +9,25 @@ class BookingController extends Controller
 {
     public function getBookings()
     {
-        $data = Attendee::select('users.Username as UserName', 'events.Title as EventName', 'attendees.*')
-            ->join('users', 'attendees.UserID', '=', 'users.UserID')
-            ->join('events', 'attendees.EventID', '=', 'events.EventID')
-            ->get();
+        // $data = Attendee::select('users.Username as UserName', 'events.Title as EventName', 'attendees.*')
+        //     ->join('users', 'attendees.UserID', '=', 'users.UserID')
+        //     ->join('events', 'attendees.EventID', '=', 'events.EventID')
+        //     ->get();
+$data = Attendee::with(['user' => function ($query) {
+                $query->select('UserID', 'Username');
+            }, 'event' => function ($query) {
+                $query->select('EventID', 'Title');
+            }])->get();
+
         return $data;
     }
     public function getSpecificBookings(Request $request)
     {
         $attendeeId = $request->attendeeId;
-        $data = Attendee::select(
-            'users.Username as UserName',
-            'events.Title as EventName',
-            'attendees.*'
-        )
-            ->join('users', 'attendees.UserID', '=', 'users.UserID')
-            ->join('events', 'attendees.EventID', '=', 'events.EventID')
-            ->where('attendees.AttendeeID', $attendeeId)
-            ->first();
+        $data = Attendee::with(['event' => function ($query) {
+            $query->select('EventID', 'Title','RegistrationFee','Description');
+        }])->where('AttendeeID', $attendeeId)
+        ->first();
 
         return $data;
     }

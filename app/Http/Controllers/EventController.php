@@ -77,19 +77,31 @@ class EventController extends Controller
         $param3 = $request->input('Category', null);
 
         $id = auth()->user()->UserID;
-        $query = Event::join('attendees', 'events.EventID', '=', 'attendees.EventID')
-            ->where('attendees.UserID', $id);
+        // $query = Event::join('attendees', 'events.EventID', '=', 'attendees.EventID')
+        //     ->where('attendees.UserID', $id);
+
+        $query = Attendee::with('event');
 
         // Apply filters
         if ($param1 !== null) {
-            $query->where('events.Title', $param1);
+            $query->whereHas('event', function ($query) use ($param1) {
+                $query->where('Title', $param1);
+            });
         }
         if ($param2 !== null) {
-            $query->where('events.Location', $param2);
+            $query->whereHas('event', function ($query) use ($param2) {
+                $query->where('Location', $param2);
+            });
         }
         if ($param3 !== null) {
-            $query->where('events.Category', $param3);
+            $query->whereHas('event', function ($query) use ($param3) {
+                $query->where('Category', $param3);
+            });
         }
+
+        // Finally, retrieve the results
+        $query->where('UserID', $id)->get();
+
 
         // Paginate the results
         $myEvents = $query->paginate($perPage);
@@ -119,10 +131,12 @@ class EventController extends Controller
     public function getSpecificMyEvent(Request $request)
     {
         $id = $request->input('attendeeId');
-        $attendee = Attendee::select('attendees.*', 'events.*')
-            ->join('events', 'attendees.EventID', '=', 'events.EventID')
-            ->where('AttendeeID', $id)
-            ->first();
+        // $attendee = Attendee::select('attendees.*', 'events.*')
+        //     ->join('events', 'attendees.EventID', '=', 'events.EventID')
+        //     ->where('AttendeeID', $id)
+        //     ->first();
+
+        $attendee = Attendee::with('event')->where('AttendeeID', $id)->first();
 
         if (!$attendee) {
             return response()->json(['message' => 'Attendee not found'], 404);
@@ -184,44 +198,45 @@ class EventController extends Controller
         return response()->json(['message' => 'Event updated successfully']);
     }
     public function create(Request $request)
-{
-    // Validate the incoming request data
-    $validatedData = $request->validate([
-        'title' => 'required|string|max:255',
-        'description' => 'required|string',
-        'startDateTime' => 'required|date',
-        'endDateTime' => 'required|date|after:startDateTime',
-        'location' => 'required|string|max:255',
-        'maxAttendees' => 'required|integer',
-        'registrationFee' => 'required|numeric',
-        'categoryname' => 'required|string',
-        'status' => 'required',
-        'eventImage' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Max size of 2MB
-    ]);
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'startDateTime' => 'required|date',
+            'endDateTime' => 'required|date|after:startDateTime',
+            'location' => 'required|string|max:255',
+            'maxAttendees' => 'required|integer',
+            'registrationFee' => 'required|numeric',
+            'categoryname' => 'required|string',
+            'status' => 'required',
+            'eventImage' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Max size of 2MB
+        ]);
 
-    // Handle image upload
-    $imageFileName = $request->file('eventImage')->getClientOriginalName();
-    $imagePath = $request->file('eventImage')->move(public_path('assets/img/event'), $imageFileName);;
+        // Handle image upload
+        $imageFileName = $request->file('eventImage')->getClientOriginalName();
+        $imagePath = $request->file('eventImage')->move(public_path('assets/img/event'), $imageFileName);
+        ;
 
-    // Create a new event instance
-    $event = new Event();
-    $event->Title = $validatedData['title'];
-    $event->Description = $validatedData['description'];
-    $event->StartDateTime = $validatedData['startDateTime'];
-    $event->EndDateTime = $validatedData['endDateTime'];
-    $event->Location = $validatedData['location'];
-    $event->Category = $validatedData['categoryname'];
-    $event->MaxAttendees = $validatedData['maxAttendees'];
-    $event->RegistrationFee = $validatedData['registrationFee'];
-    $event->Status = $validatedData['status'];
-    $event->Image = $imageFileName; // Store only the image file name in the database
+        // Create a new event instance
+        $event = new Event();
+        $event->Title = $validatedData['title'];
+        $event->Description = $validatedData['description'];
+        $event->StartDateTime = $validatedData['startDateTime'];
+        $event->EndDateTime = $validatedData['endDateTime'];
+        $event->Location = $validatedData['location'];
+        $event->Category = $validatedData['categoryname'];
+        $event->MaxAttendees = $validatedData['maxAttendees'];
+        $event->RegistrationFee = $validatedData['registrationFee'];
+        $event->Status = $validatedData['status'];
+        $event->Image = $imageFileName; // Store only the image file name in the database
 
-    // Save the new event
-    $event->save();
+        // Save the new event
+        $event->save();
 
-    // Return success response
-    return response()->json(['message' => 'Event created successfully']);
-}
+        // Return success response
+        return response()->json(['message' => 'Event created successfully']);
+    }
 
 
 }

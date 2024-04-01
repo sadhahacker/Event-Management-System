@@ -31,8 +31,6 @@ class LoginController extends Controller
             'errors' => $validator->errors(),
         ], 422);
     }
-
-
     $user = User::where('email', $request->email)->first();
 
     if (!$user) {

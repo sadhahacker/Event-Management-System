@@ -51,4 +51,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    public function attendee(){
+        return $this->hasMany(Attendee::class,'UserID','UserID');
+    }
 }

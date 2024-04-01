@@ -23,7 +23,6 @@ Route::middleware('guest')->group(function () {
         return view('authentication/resetpassword');
     });
 });
-
 // Routes accessible by authenticated users
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
